@@ -1,0 +1,84 @@
+/* Style for the blue box */
+.blue-box {
+    background: linear-gradient(to bottom, #0074b0, #005783);
+    color: #fff;
+    text-align: center;
+    padding: 15px 0;
+    font-size: 24px;
+    text-transform: uppercase;
+}
+
+/* Custom styling for the form */
+.container {
+    margin-top: 50px;
+}
+
+form.clean-form {
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+form.clean-form input[type="file"] {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}
+
+form.clean-form input[type="submit"] {
+    background-color: #0074b0;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 10px 0;
+}
+
+form.clean-form input[type="submit"]:hover {
+    background-color: #005783;
+}
+
+.additional-info {
+    margin: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+}
+
+footer {
+    text-align: center;
+    background-color: #343a40;
+    color: #fff;
+    padding: 20px 0;
+}
+
+#loading-label {
+    display: none;
+    color: #0074b0;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+.form-content {
+    display: flex;
+    justify-content: space-around;
+}
+
+.input-section,
+.upload-section {
+    flex: 1;
+    text-align: left;
+    padding: 15px;
+}
+
+form.clean-form #email {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+}

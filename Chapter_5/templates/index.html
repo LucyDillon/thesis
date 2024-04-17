@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Home</title>
+</head>
+<body>
+    <div class="blue-box">
+        <h1>AMR phenotype predictor</h1>
+    </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <ul class="flash-messages">
+                {% for category, message in messages %}
+                    <li class="{{ category }}">{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <div class="container">
+        <form method="POST" action="/home" enctype="multipart/form-data" class="clean-form">
+            {{ form.hidden_tag() }}
+            <div class="form-content">
+                <!-- Model selection and Email input -->
+                             <div class="upload-section">
+                    <h3>Upload data:</h3>
+                    {{ form.file() }}
+                    <input type="submit" value="Upload File" class="btn btn-primary">
+                    <label id="loading-label" style="display: none;">You will receive an email when the job is complete.</label>
+                    <p>Accepted file extensions: .fna or .fasta</p>
+                </div>
+                <!-- File upload and submit button -->
+               <div class="input-section">
+                    <h3>Choose your model:</h3>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" id="model1" name="model" value="DecisionTree">
+                        <label class="form-check-label" for="model1"> Decision tree model</label><br>
+                        <input class="form-check-input" type="radio" id="model2" name="model" value="CNN">
+                        <label class="form-check-label" for="model2"> CNN model</label><br>
+                        <input class="form-check-input" type="radio" id="model3" name="model" value="BothModels">
+                        <label class="form-check-label" for="model3"> Both models</label><br><br>
+                    </div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required placeholder="Enter your email" class="form-control">
+                </div>                
+            </div>
+        </form>
+        <div class="additional-info">
+            <h4>Model information:</h4>
+        <p> Decision tree models are a supervised machine learning technique that, in this case, helps to provide biological inferences of what might cause phenotypic resistance.</p>
+        <p> The convoluted neural network (CNN) is a deep learning model which should have a higher accuracy than the decision tree models but no biological inferences. </p>
+        <p>Note: this will be most appropriate for clinical data as the majority of training data are from clinical samples. </p>
+        </div>
+        <div class="additional-info">
+            <h4>Read more about the background of this tool in our paper:</h4>
+            <a href="https://www.life-science-alliance.org/content/7/4/e202302420" target="_blank">Paper</a>
+            <p style="font-style: italic;"> "Accessory genes define species-specific routes to antibiotic resistance."</p>
+            <p> Citation: L. Dillon, NJ. Dimonaco, and CJ. Creevey. Accessory genes define species-specific
+            routes to antibiotic resistance. Life Science Alliance Jan 2024, 7 (4) e202302420; DOI: 10.26508/lsa.202302420.
+            </p>
+        </div>
+        <footer>
+            <p>&copy; 2024 AMR phenotype prediction tool. Contact: ldillon05@qub.ac.uk </p>
+        </footer>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var form = document.querySelector(".clean-form");
+            var loadingLabel = document.getElementById("loading-label");
+
+            form.addEventListener("submit", function() {
+                loadingLabel.style.display = "block"; // Show the label
+            });
+        });
+    </script>
+</body>
+</html>
