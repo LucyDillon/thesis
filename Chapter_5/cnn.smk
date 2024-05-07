@@ -126,6 +126,37 @@ rule eggnog2cnn:
         python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_tob} -o {output_tob}
         """
 
+
+rule combine_files:
+    input:
+        predictions_ami="CNN_predictions_ami.txt"
+        predictions_amo="CNN_predictions_amo.txt"
+        predictions_amp="CNN_predictions_amp.txt"
+        predictions_az="CNN_predictions_az.txt"
+        predictions_cefe="CNN_predictions_cefe.txt"
+        predictions_ceft="CNN_predictions_ceft.txt"
+        predictions_chlo="CNN_predictions_chlo.txt"
+        predictions_cip="CNN_predictions_cip.txt"
+        predictions_clin="CNN_predictions_clin.txt"
+        predictions_col="CNN_predictions_col.txt"
+        predictions_dor="CNN_predictions_dor.txt"
+        predictions_ert="CNN_predictions_ert.txt"
+        predictions_eryt="CNN_predictions_eryt.txt"
+        predictions_fos="CNN_predictions_fos.txt"
+        predictions_gen="CNN_predictions_gen.txt"
+        predictions_imi="CNN_predictions_imi.txt"
+        predictions_lev="CNN_predictions_lev.txt"
+        predictions_mer="CNN_predictions_mer.txt"
+        predictions_mox="CNN_predictions_mox.txt"
+        predictions_nit="CNN_predictions_nit.txt"
+        predictions_tet="CNN_predictions_tet.txt"
+        predictions_tig="CNN_predictions_tig.txt"
+        predictions_tob="CNN_predictions_tob.txt"
+    output:
+        final=temp("static/files/decision_tree/{genome}_FINAL.txt.CNN_predicitions.txt")
+    run:
+        shell("""echo "Antibiotic predicted_pheno" > {output.final}; awk '{{print "Amikacin", $0}}' {input.predictions_ami} >> {output.final}; awk '{{print "Amoxicillin", $0}}' {input.predictions_amo} >> {output.final}; awk '{{print "Ampicillin", $0}}' {input.predictions_amp} >> {output.final}; awk '{{print "Aztreonam", $0}}' {input.predictions_az} >> {output.final}; awk '{{print "Cefepime", $0}}' {input.predictions_cefe} >> {output.final}; awk '{{print "Ceftriaxone", $0}}' {input.predictions_ceft} >> {output.final}; awk '{{print "Chloramphenicol", $0}}' {input.predictions_chlo} >> {output.final}; awk '{{print "Ciprofloxacin", $0}}' {input.predictions_cip} >> {output.final}; awk '{{print "Clindamycin", $0}}' {input.predictions_clin} >> {output.final}; awk '{{print "Colistin", $0}}' {input.predictions_col} >> {output.final}; awk '{{print "Doripenem", $0}}' {input.predictions_dor} >> {output.final}; awk '{{print "Ertapenem", $0}}' {input.predictions_ert} >> {output.final}; awk '{{print "Erythromcyin", $0}}' {input.predictions_eryt} >> {output.final}; awk '{{print "Fosfomycin", $0}}' {input.predictions_fos} >> {output.final}; awk '{{print "Gentamicin", $0}}' {input.predictions_gen} >> {output.final}; awk '{{print "Imipenem, $0}}' {input.predictions_imi} >> {output.final}; awk '{{print "Levofloxacin", $0}}' {input.predictions_lev} >> {output.final}; awk '{{print "Meropenem", $0}}' {input.predictions_mer} >> {output.final}; awk '{{print "Moxifloxacin", $0}}' {input.predictions_mox} >> {output.final}; awk '{{print "Nitrofurantoin", $0}}' {input.predictions_nit} >> {output.final}; awk '{{print "Tetracycline", $0}}' {input.predictions_tet} >> {output.final}; awk '{{print "Tigecycline", $0}}' {input.predictions_tig} >> {output.final}; awk '{{print "Tobramycin", $0}}' {input.predictions_tob} >> {output.final}""")
+
 rule send_results:
     input:
         file="static/CNN_predictions.txt"  
