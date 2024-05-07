@@ -52,12 +52,78 @@ rule eggnog:
 rule eggnog2cnn:
     input:
          eggnog_output="{genome}.emapper.annotations"
-         cnn_model="Training_models/gentamicin_egg_model.h5"
+         cnn_ami="Training_models/amikacin_egg_model.h5"
+         cnn_amo="Training_models/amoxicillin_egg_model.h5"
+         cnn_amp="Training_models/ampicillin_egg_model.h5"
+         cnn_az="Training_models/aztreonam_egg_model.h5"
+         cnn_cefe="Training_models/cefepime_egg_model.h5"
+         cnn_ceft="Training_models/ceftriaxone_egg_model.h5"
+         cnn_chlo="Training_models/chloramphenicol_egg_model.h5"
+         cnn_cip="Training_models/ciprofloxacin_egg_model.h5"
+         cnn_clin="Training_models/clindamycin_egg_model.h5"
+         cnn_col="Training_models/colistin_egg_model.h5"
+         cnn_dor="Training_models/doripenem_egg_model.h5"
+         cnn_ert="Training_models/ertapenem_egg_model.h5"
+         cnn_eryt="Training_models/erythromycin_egg_model.h5"
+         cnn_fos="Training_models/fosfomycin_egg_model.h5"
+         cnn_gen="Training_models/gentamicin_egg_model.h5"
+         cnn_imi="Training_models/imipenem_egg_model.h5"
+         cnn_lev="Training_models/levofloxacin_egg_model.h5"
+         cnn_mer="Training_models/meropenem_egg_model.h5"
+         cnn_mox="Training_models/moxifloxacin_egg_model.h5"
+         cnn_nit="Training_models/nitrofurantoin_egg_model.h5"
+         cnn_tet="Training_models/tetracycline_egg_model.h5"
+         cnn_tig="Training_models/tigecycline_egg_model.h5"
+         cnn_tob="Training_models/tobramycin_egg_model.h5"
     output:
-          "CNN_predictions.txt"
+        output_ami="CNN_predictions_ami.txt"
+        output_amo="CNN_predictions_amo.txt"
+        output_amp="CNN_predictions_amp.txt"
+        output_az="CNN_predictions_az.txt"
+        output_cefe="CNN_predictions_cefe.txt"
+        output_ceft="CNN_predictions_ceft.txt"
+        output_chlo="CNN_predictions_chlo.txt"
+        output_cip="CNN_predictions_cip.txt"
+        output_clin="CNN_predictions_clin.txt"
+        output_col="CNN_predictions_col.txt"
+        output_dor="CNN_predictions_dor.txt"
+        output_ert="CNN_predictions_ert.txt"
+        output_eryt="CNN_predictions_eryt.txt"
+        output_fos="CNN_predictions_fos.txt"
+        output_gen="CNN_predictions_gen.txt"
+        output_imi="CNN_predictions_imi.txt"
+        output_lev="CNN_predictions_lev.txt"
+        output_mer="CNN_predictions_mer.txt"
+        output_mox="CNN_predictions_mox.txt"
+        output_nit="CNN_predictions_nit.txt"
+        output_tet="CNN_predictions_tet.txt"
+        output_tig="CNN_predictions_tig.txt"
+        output_tob="CNN_predictions_tob.txt"
     shell:
         """
-        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_model} -o {output}
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_ami} -o {output_ami};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_amo} -o {output_amo};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_amp} -o {output_amp};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_az} -o {output_az};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_cefe} -o {output_cefe};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_ceft} -o {output_ceft};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_chlo} -o {output_chlo};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_cip} -o {output_cip};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_clin} -o {output_clin};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_col} -o {output_col};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_dor} -o {output_dor};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_ert} -o {output_ert};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_eryt} -o {output_eryt};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_fos} -o {output_fos};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_gen} -o {output_gen};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_imi} -o {output_imi};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_lev} -o {output_lev};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_mer} -o {output_mer};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_mox} -o {output_mox};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_nit} -o {output_nit};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_tet} -o {output_tet};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_tig} -o {output_tig};
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_tob} -o {output_tob}
         """
 
 rule send_results:
