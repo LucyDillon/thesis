@@ -49,17 +49,24 @@ rule eggnog:
 
 
 # Now convert the eggNOG output to an appropriate format for python
-
-# load CNN models
-# test genome on CNN 
+rule eggnog2cnn:
+    input:
+         eggnog_output="{genome}.emapper.annotations"
+         cnn_model="Training_models/gentamicin_egg_model.h5"
+    output:
+          "CNN_predictions.txt"
+    shell:
+        """
+        python3 eggnog2cnnPredictions.py -file {input.eggnog_output} -model {input.cnn_model} -o {output}
+        """
 
 rule send_results:
     input:
-        file="static/files/diamond_annotation/{genome}_DiamondReduced.faa"  
+        file="static/CNN_predictions.txt"  
     params:
-        name="static/files/diamond_annotation/{genome}.txt"
+        name="static/"
     output:
-        result="static/files/results/{genome}.txt"
+        result="static/files/results/{genome}_CNN.txt"
     shell:
         """
         mv {input.file} {params.name};
