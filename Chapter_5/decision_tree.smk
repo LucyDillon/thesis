@@ -4,14 +4,14 @@ GENOMES, = glob_wildcards("static/files/{genome}.fna")
 
 rule all:
     input:
-        expand("static/files/results/{genome}.txt", genome=GENOMES)
+        expand("static/files/results/{genome}.tar.gz", genome=GENOMES)
 
 
 rule prodigal:
     input:
         "static/files/{genome}.fna"
     output:
-        temp("static/files/prodigal_output/{genome}.faa")
+        "static/files/decision_tree/{genome}.faa"
     singularity:
         "ldillon_amrwebsite.sif"
     shell:
@@ -21,10 +21,10 @@ rule prodigal:
 
 rule diamond:
     input:
-        faa="static/files/prodigal_output/{genome}.faa",
+        faa="static/files/decision_tree/{genome}.faa",
         db="data/eggnog_proteins.dmnd"
     output:
-        temp("static/files/diamond_annotation/{genome}_Diamond.faa")
+        "static/files/decision_tree/{genome}_Diamond.faa"
     shell:
         '''
         diamond blastp -d {input.db} -q {input.faa} --more-sensitive --threads 8 -e 0.001000 -o {output} --top 3 --query-cover 0 --subject-cover 0
@@ -32,32 +32,32 @@ rule diamond:
 
 rule Edit_diamond:
     input:
-        "static/files/diamond_annotation/{genome}_Diamond.faa"
+        "static/files/decision_tree/{genome}_Diamond.faa"
     output:
-        temp("static/files/diamond_annotation/{genome}_DiamondReduced.faa")
+        "static/files/decision_tree/{genome}_DiamondReduced.faa"
     run:
         shell("""cat {input} | awk 'BEGIN{{prev = ""}};{{if ($1 != prev) {{ prev=$1; print $1"\t"$2"\t"$11"\t"$12 }} }}' > {output}""")
 
 
 rule eggnog:
     input:
-        faa="static/files/diamond_annotation/{genome}_DiamondReduced.faa",
+        faa="static/files/decision_tree/{genome}_DiamondReduced.faa",
         db="data/"
     output:
-        temp("static/files/{genome}.emapper.annotations")
+        "static/files/decision_tree/{genome}.emapper.annotations"
     params:
         prefix="{genome}"
     shell:
         """
         emapper.py --data_dir {input.db} --annotate_hits_table {input.faa}  --no_file_comments --override --output {params.prefix} --cpu 8;
-        mv {params.prefix}.emapper.annotations static/files/
+        mv {params.prefix}.emapper.annotations static/files/decision_tree/
         """
 
 rule eggnog_2_arff:
     input:
-        "static/files/{genome}.emapper.annotations"
+        "static/files/decision_tree/{genome}.emapper.annotations"
     output:
-        temp("static/files/decision_tree/{genome}.arff")
+        "static/files/decision_tree/{genome}.arff"
     shell:
         """
         python eggnog_output_to_arff.py -file {input} -o {output} -c_attr_name phenotype -catagory1 Susceptible -catagory2 Resistant
@@ -70,7 +70,6 @@ rule genome_names:
         temp("static/files/decision_tree/{genome}_names.txt")
     run:
         shell("""ls {input} > {output}; echo >> {output}""")
-
 
 rule run_c_program:
     input:
@@ -162,21 +161,35 @@ rule combine_files:
         predictions_tig="static/files/decision_tree/{genome}_tig.txt.predicitions.txt",
         predictions_tob="static/files/decision_tree/{genome}_tob.txt.predicitions.txt"
     output:
-        final=temp("static/files/decision_tree/{genome}_FINAL.txt.predicitions.txt")
+        final="static/files/decision_tree/{genome}_FINAL.txt.predicitions.txt",
     run:
         shell("""echo "Antibiotic   Genome_name Genome_number   Node_number Node_label" > {output.final}; awk '{{print "Amikacin", $0}}' {input.predictions_ami} >> {output.final}; awk '{{print "Amoxicillin", $0}}' {input.predictions_amo} >> {output.final}; awk '{{print "Ampicillin", $0}}' {input.predictions_amp} >> {output.final}; awk '{{print "Aztreonam", $0}}' {input.predictions_az} >> {output.final}; awk '{{print "Ciprofloxacin", $0}}' {input.predictions_cip} >> {output.final}; awk '{{print "Clindamycin", $0}}' {input.predictions_clin} >> {output.final}; awk '{{print "Colistin", $0}}' {input.predictions_col} >> {output.final}; awk '{{print "Doripenem", $0}}' {input.predictions_dor} >> {output.final}; awk '{{print "Ertapenem", $0}}' {input.predictions_ert} >> {output.final}; awk '{{print "Gentamicin", $0}}' {input.predictions_gen} >> {output.final}; awk '{{print "Meropenem", $0}}' {input.predictions_mer} >> {output.final}; awk '{{print "Nitrofurantoin", $0}}' {input.predictions_nit} >> {output.final}; awk '{{print "Tetracycline", $0}}' {input.predictions_tet} >> {output.final}; awk '{{print "Tigecycline", $0}}' {input.predictions_tig} >> {output.final}; awk '{{print "Tobramycin", $0}}' {input.predictions_tob} >> {output.final}""")
 
 
-rule send_results:
+rule zip_files:
     input:
-        file="static/files/decision_tree/{genome}_FINAL.txt.predicitions.txt"
+        "static/files/decision_tree/{genome}_Diamond.faa",
+	"static/files/decision_tree/{genome}_FINAL.txt.predicitions.txt",
+        "static/files/decision_tree/{genome}.arff",
+        "static/files/decision_tree/{genome}.emapper.annotations",
+        "static/files/decision_tree/{genome}_DiamondReduced.faa",
     params:
-        name="static/files/decision_tree/{genome}.txt"
+        path="static/files/decision_tree"
     output:
-        result="static/files/results/{genome}.txt"
+        "static/files/{genome}.tar.gz"
     shell:
         """
-        mv {input.file} {params.name};
-        echo "DT model smk" >> {params.name};
-        mv {params.name} {output.result}
+        tar -czvf {output} {input};
+        rm -r {params.path}
+        """
+
+
+rule send_results:
+    input:
+        file="static/files/{genome}.tar.gz"
+    output:
+        result="static/files/results/{genome}.tar.gz"
+    shell:
+        """
+        mv {input.file} {output.result}
         """
